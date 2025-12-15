@@ -140,6 +140,24 @@ function authorizeOrderPayment(amount) {
  * @returns {Promise<object>}
  */
 function buildCustomerOnboarding(fetchCustomerProfile, fetchSubscription, fetchWelcomePack) {
+
+    let customer; // debemos definir la variable fuera del hell para poder usar la variable en los distintos then()
+
+    // Recordar que hay que hacer return para que la función devuelva la promesa al then()
+    return fetchCustomerProfile() // devuelve el customer = {id, name}
+        .then((customer) => { 
+            customer = customer; // guardamos el customer para usarlo luego
+            return fetchSubscription(customer.id) // devuelve la subscription = {plan, userId}
+                .then((subscription) => { 
+                    const bundle = {"customer": customer,
+                                    "subscription": subscription};
+                    return fetchWelcomePack(bundle) // devuelve el welcomePack = {welcomeEmailSent} 
+                    // esto es lo que hay que devolver en el resultado final, no hay que hacer otro then()
+                });
+        })
+        .catch((error) => {
+            throw new Error("Onboarding failed: " + error.message);
+        });
 }
 
 /**
