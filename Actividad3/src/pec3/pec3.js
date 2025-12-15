@@ -85,7 +85,28 @@ function summarizeCartItems(cartItems, callback) {
  * @param {Function} callback
  * @returns {Promise<object>}
  */
-function fetchUserRecommendations(userId, callback) {    
+function fetchUserRecommendations(userId, callback) { 
+    return new Promise((resolve, reject) => {
+        if(typeof userId !== 'number' || userId <= 0) {
+            const error = new Error("Invalid user id");
+            // Llama a la callback antes de rechazar la promesa
+            callback(error, null);
+            return reject(error);
+        }
+
+        setTimeout(() => {
+            const payload = {
+                userId: userId,
+                // Pongo estas recomendaciones del enunciado por no pensar pero podrían ser cualquier otra array de tres cadenas de texto
+                recommendations: ['Top pick for user 99', 
+                                  'Trending in your area',
+                                  'Customers too enjoyed']
+            };
+            // Llama a la callback antes de resolver la promesa
+            callback(null, payload);
+            resolve(payload);
+        }, 200);
+    });   
 }
 
 /**
