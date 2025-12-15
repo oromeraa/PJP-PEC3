@@ -9,4 +9,4 @@ Por ejemplo en la comunicación con dispositivo inteligentes en casa. Estando en
 Pues en mi trabajo, desarrollando el firmware de dispositivos sensóricos embebidos, el microcontrolador manda una instrucción de medición de un sensor optico pero sigo ejecutando mi código con normalidad. Cuando el sensor termina, éste activa una señal de interrupción que la recibe el microcontrolador y lee el dato medido.
 
 - ¿Hay algún ejercicio que te haya resultado complicado de resolver, o que no hayas podido resolver? ¿Has comprendido la solución propuesta?
-El concepto event loop me ha sorprendido, no lo conocía. Curioso comportamiento. Sobre todo en el ejercicio 4, para nada esperaba ese comportamiento. 
+El concepto event loop me ha sorprendido, no lo conocía. Curioso comportamiento. Sobre todo en el ejercicio 4, para nada esperaba ese comportamiento. git 
