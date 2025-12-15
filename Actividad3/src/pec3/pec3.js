@@ -21,15 +21,15 @@ function summarizeCartItems(cartItems, callback) {
 
     // validaciones de id en los ítems
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty
-    if(cartItems.some((item) => !item.hasOwnProperty('id'))) {
+    if(cartItems.some((item) => !item.hasOwnProperty("id"))) {
         return callback("missing id", null);
     }
-    if(cartItems.some((item) => typeof item.id !== 'number')) {
+    if(cartItems.some((item) => typeof item.id !== "number")) {
         return callback("id not a number", null);
     }
 
     // validaciones de price en los ítems
-    if(cartItems.some((item) => typeof item.price !== 'number')) {
+    if(cartItems.some((item) => typeof item.price !== "number")) {
         return callback("price not a number", null);
     } else {
         if(cartItems.some((item) => item.price == 0)) {
@@ -40,7 +40,7 @@ function summarizeCartItems(cartItems, callback) {
         }
     }
     // validaciones de quantity en los ítems
-    if(cartItems.some((item) => typeof item.quantity !== 'number')) {
+    if(cartItems.some((item) => typeof item.quantity !== "number")) {
         return callback("quantity not a number", null);
     } else {        
         if(cartItems.some((item) => item.quantity == 0)) {
@@ -87,7 +87,8 @@ function summarizeCartItems(cartItems, callback) {
  */
 function fetchUserRecommendations(userId, callback) { 
     return new Promise((resolve, reject) => {
-        if(typeof userId !== 'number' || userId <= 0) {
+        // validación de userId
+        if(typeof userId !== "number" || userId <= 0) {
             const error = new Error("Invalid user id");
             // Llama a la callback antes de rechazar la promesa
             callback(error, null);
@@ -96,11 +97,11 @@ function fetchUserRecommendations(userId, callback) {
 
         setTimeout(() => {
             const payload = {
-                userId: userId,
+                "userId": userId,
                 // Pongo estas recomendaciones del enunciado por no pensar pero podrían ser cualquier otra array de tres cadenas de texto
-                recommendations: ['Top pick for user 99', 
-                                  'Trending in your area',
-                                  'Customers too enjoyed']
+                "recommendations": ['Top pick for user 99', 
+                                    'Trending in your area',
+                                    'Customers too enjoyed']
             };
             // Llama a la callback antes de resolver la promesa
             callback(null, payload);
@@ -116,6 +117,18 @@ function fetchUserRecommendations(userId, callback) {
  * @returns {Promise<object>}
  */
 function authorizeOrderPayment(amount) {
+    // validación de amount
+    // Primero hay que validar si es un número antes de comparar su valor
+    if (typeof amount !== "number" || amount <= 0) {
+        return Promise.reject(new Error("Invalid order amount"));
+    }
+    if (amount > 2500) {
+        return Promise.reject(new Error("Order total too high"));
+    }
+
+    // Si todo es correcto:
+    return Promise.resolve({"status": 'approved', 
+                            "amount": amount});
 }
 
 /**
