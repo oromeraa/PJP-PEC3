@@ -140,16 +140,15 @@ function authorizeOrderPayment(amount) {
  * @returns {Promise<object>}
  */
 function buildCustomerOnboarding(fetchCustomerProfile, fetchSubscription, fetchWelcomePack) {
-
-    let customer; // debemos definir la variable fuera del hell para poder usar la variable en los distintos then()
+    let _customer; // debemos definir la variable fuera del hell para poder usar la variable en los distintos then()
 
     // Recordar que hay que hacer return para que la función devuelva la promesa al then()
     return fetchCustomerProfile() // devuelve el customer = {id, name}
         .then((customer) => { 
-            customer = customer; // guardamos el customer para usarlo luego
-            return fetchSubscription(customer.id) // devuelve la subscription = {plan, userId}
+            _customer = customer; // guardamos el customer para usarlo luego
+            return fetchSubscription(_customer.id) // devuelve la subscription = {plan, userId}
                 .then((subscription) => { 
-                    const bundle = {"customer": customer,
+                    const bundle = {"customer": _customer,
                                     "subscription": subscription};
                     return fetchWelcomePack(bundle) // devuelve el welcomePack = {welcomeEmailSent} 
                     // esto es lo que hay que devolver en el resultado final, no hay que hacer otro then()
@@ -168,6 +167,17 @@ function buildCustomerOnboarding(fetchCustomerProfile, fetchSubscription, fetchW
  * @returns {Promise<object>}
  */
 async function loadPerformanceReport(fetchMetrics, processMetrics) {
+    let report = {};
+
+    try {
+        const metrics = await fetchMetrics();
+        report = metrics;
+        const processedMetrics = await processMetrics(metrics.stats);
+        report["average"] = processedMetrics.average;
+    } catch (error) {
+        throw new Error("Failed to load performance report: " + error.message);
+    }
+    return report;
 }
 
 /**
