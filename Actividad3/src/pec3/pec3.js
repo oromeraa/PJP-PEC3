@@ -6,6 +6,76 @@
  * @returns {*}
  */
 function summarizeCartItems(cartItems, callback) {
+    // Control de errores y validaciones
+    // validación de cartItems
+    if (cartItems.length === 0 || !Array.isArray(cartItems)) {
+        return callback("empty array", null); 
+        // juntamos la dos validaciones ya que si no es una array espera cualquier string de error
+    }
+
+    // validación de ítems nulos en la array
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+    if (cartItems.some((item) => item === null)) {
+        return callback("item is null", null);
+    }
+
+    // validaciones de id en los ítems
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty
+    if(cartItems.some((item) => !item.hasOwnProperty('id'))) {
+        return callback("missing id", null);
+    }
+    if(cartItems.some((item) => typeof item.id !== 'number')) {
+        return callback("id not a number", null);
+    }
+
+    // validaciones de price en los ítems
+    if(cartItems.some((item) => typeof item.price !== 'number')) {
+        return callback("price not a number", null);
+    } else {
+        if(cartItems.some((item) => item.price == 0)) {
+            return callback("price zero", null);
+        }
+        if(cartItems.some((item) => item.price < 0)) {
+            return callback("price negative", null);
+        }
+    }
+    // validaciones de quantity en los ítems
+    if(cartItems.some((item) => typeof item.quantity !== 'number')) {
+        return callback("quantity not a number", null);
+    } else {        
+        if(cartItems.some((item) => item.quantity == 0)) {
+            return callback("quantity zero", null);
+        }
+        if(cartItems.some((item) => item.quantity < 0)) {
+            return callback("quantity negative", null);
+        }
+    }
+
+    // Si todo es correcto:
+    let totalItems = 0;
+    let totalPrice = 0;
+    let itemIds = [];
+
+    for (let item of cartItems) {
+        totalItems += item.quantity;
+        totalPrice += item.price * item.quantity;
+        itemIds.push(item.id);
+    }
+
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    function compareNumbers(a, b) {
+        return a - b;
+    }
+
+    itemIds.sort(compareNumbers);
+    
+    const summary = {
+        "totalItems": totalItems,
+        "totalPrice": totalPrice,
+        "itemIds": itemIds
+    };
+
+    return callback(null, summary);
 }
 
 /**
@@ -15,7 +85,7 @@ function summarizeCartItems(cartItems, callback) {
  * @param {Function} callback
  * @returns {Promise<object>}
  */
-function fetchUserRecommendations(userId, callback) {
+function fetchUserRecommendations(userId, callback) {    
 }
 
 /**
